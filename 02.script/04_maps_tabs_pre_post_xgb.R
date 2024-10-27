@@ -95,19 +95,50 @@ d_srag_covid19 <- d_srag_real |>
   left_join(geobr, by = c("sg_uf"="abbrev_state"))
 
 
-# Maps ----------------------------------------------------------------------
+# Cases and deaths pre and post XGB ---------------------------------------
 
-### Pre-XGB ####
+## Cases ####
+# pre-xgb
 d_srag_casos_pre <- d_srag_covid19 |> 
   filter(class_cov == "COVID-19r") |> 
   group_by(code_state) |> 
   summarise(n_casos = n()) |> 
   left_join(sinasc2021 |> dplyr::select(code_uf, total_nv), by = c("code_state"="code_uf")) |> 
   mutate(taxa_casos_pre = (n_casos / total_nv) * 100000) |> 
-  left_join(geobr, by = "code_state") |> 
-  st_as_sf()
+  left_join(geobr, by = "code_state")
 
-g01 <- ggplot(d_srag_casos_pre, aes(fill = taxa_casos_pre)) + 
+# post-xgb
+d_srag_casos_pos <- d_srag_covid19 |> 
+  group_by(code_state) |> 
+  summarise(n_casos = n()) |> 
+  left_join(sinasc2021 |> dplyr::select(code_uf, total_nv), by = c("code_state"="code_uf")) |> 
+  mutate(taxa_casos_pos = (n_casos / total_nv) * 100000) |> 
+  left_join(geobr, by = "code_state")
+
+## Death ####
+# pre-xgb
+d_srag_obitos_pre <- d_srag_covid19 |> 
+  filter(class_cov == "COVID-19r" & evolucao == "Death") |> 
+  group_by(code_state) |> 
+  summarise(n_obitos = n()) |> 
+  left_join(sinasc2021 |> dplyr::select(code_uf, total_nv), by = c("code_state"="code_uf")) |> 
+  mutate(taxa_obitos_pre = (n_obitos / total_nv) * 100000) |> 
+  left_join(geobr, by = "code_state")
+
+# post-xgb
+d_srag_obitos_pos <- d_srag_covid19 |> 
+  filter(evolucao == "Death") |> 
+  group_by(code_state) |> 
+  summarise(n_obitos = n()) |> 
+  left_join(sinasc2021 |> dplyr::select(code_uf, total_nv), by = c("code_state"="code_uf")) |> 
+  mutate(taxa_obitos_pos = (n_obitos / total_nv) * 100000) |> 
+  left_join(geobr, by = "code_state")
+
+
+# Maps ----------------------------------------------------------------------
+
+# pre-xgb
+g01 <- ggplot(d_srag_casos_pre |> st_as_sf(), aes(fill = taxa_casos_pre)) + 
   geom_sf(color = "#ffffff") +
   scale_fill_gradient(low = "#0096ff", high = "#e0115f", limits = c(0, 1500)) +
   geom_sf_text(aes(label = abbrev_state), size = 3, color = "#ffffff") +
@@ -128,16 +159,8 @@ g01 <- ggplot(d_srag_casos_pre, aes(fill = taxa_casos_pre)) +
     style = north_arrow_fancy_orienteering
   )
 
-### Post-XGB ####
-d_srag_casos_pos <- d_srag_covid19 |> 
-  group_by(code_state) |> 
-  summarise(n_casos = n()) |> 
-  left_join(sinasc2021 |> dplyr::select(code_uf, total_nv), by = c("code_state"="code_uf")) |> 
-  mutate(taxa_casos_pos = (n_casos / total_nv) * 100000) |> 
-  left_join(geobr, by = "code_state") |> 
-  st_as_sf()
-
-g02 <- ggplot(d_srag_casos_pos, aes(fill = taxa_casos_pos)) + 
+# post-xgb
+g02 <- ggplot(d_srag_casos_pos |> st_as_sf(), aes(fill = taxa_casos_pos)) + 
   geom_sf(color = "#ffffff") +
   scale_fill_gradient(low = "#0096ff", high = "#e0115f", limits = c(0, 1500)) +
   geom_sf_text(aes(label = abbrev_state), size = 3, color = "#ffffff") +
@@ -163,7 +186,6 @@ g02 <- ggplot(d_srag_casos_pos, aes(fill = taxa_casos_pos)) +
 
 ## Cases ####
 tbl03 <- d_srag_casos_pre |> 
-  as_tibble() |> 
   rename(n_casos_pre = n_casos) |> 
   left_join(d_srag_casos_pos |> rename(n_casos_pos = n_casos)) |> 
   dplyr::select(code_state, abbrev_state, name_state, geom, n_casos_pre, n_casos_pos, taxa_casos_pre, taxa_casos_pos) |>
@@ -195,7 +217,6 @@ tbl03 <- d_srag_casos_pre |>
 
 ## Death ####
 tbl04 <- d_srag_obitos_pre |> 
-  as_tibble() |> 
   rename(n_obitos_pre = n_obitos) |> 
   left_join(d_srag_obitos_pos |> rename(n_obitos_pos = n_obitos)) |> 
   dplyr::select(code_state, abbrev_state, name_state, geom, n_obitos_pre, n_obitos_pos, taxa_obitos_pre, taxa_obitos_pos) |>
