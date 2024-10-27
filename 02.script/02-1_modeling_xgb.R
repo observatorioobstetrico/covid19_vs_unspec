@@ -194,7 +194,7 @@ d_srag_com_pred <- d_srag_ind |>
 gt::gtsave(tbl01, filename = "03.results/supplementary/table01.png")
 
 # data
-saveRDS(d_srag_com_pred, "01.dados/srag_16-21_[pred].rds")
+saveRDS(d_srag_com_pred, "01.data/srag_16-21_[pred].rds")
 
 
 # Clean environment -------------------------------------------------------
