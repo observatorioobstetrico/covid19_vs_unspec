@@ -60,7 +60,7 @@ d_srag_def <- d_srag_def |>
 
 # Train, test and cross validation ----------------------------------------
 
-# Train and test ####
+# train and test 
 set.seed(2625)
 
 d_sp <- initial_split(d_srag_def)
@@ -72,7 +72,7 @@ d_tr <- training(d_sp)
 d_ts <- testing(d_sp)
 
 
-## Cross validation ####
+# cross validation
 set.seed(2624); folds <- vfold_cv(d_tr, v = 10, repeats = 3)
 
 
