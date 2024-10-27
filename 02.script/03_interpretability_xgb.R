@@ -116,10 +116,10 @@ g2 <- g1 +
   scale_y_discrete(
     labels = c(
       "Respiratory discomfort_Yes",
-      "Influenza vaccine_No",
+      "Influenza vaccination_No",
       "Oxygen saturation < 95%_No",
-      "Gestational moment_ 2nd quarter",
-      "Cardiopathy_No",
+      "Gestational stage_ 2nd quarter",
+      "Heart disease_No",
       "Cough_Yes",
       "Obesity_Blank",
       "Age",
