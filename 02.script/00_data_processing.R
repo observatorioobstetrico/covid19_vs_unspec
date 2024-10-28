@@ -82,7 +82,7 @@ srag1617 <- full_join(srag16, srag17)
 
 # 2016 + 2017 + 2018
 srag161718 <- full_join(srag1617, srag18) |> 
-  # recategoriza variaveis
+  # recategorizes variables
   mutate(
     # uf
     SG_UF = ifelse(SG_UF == 11, "RO",
@@ -112,11 +112,11 @@ srag161718 <- full_join(srag1617, srag18) |>
                                     ifelse(SG_UF == 51, "MT",
                                      ifelse(SG_UF == 52, "GO",
                                       ifelse(SG_UF == 53, "DF", SG_UF))))))))))))))))))))))))))),
-    #idade
+    #age
     NU_IDADE_N = ifelse(str_sub(NU_IDADE_N, end = 1) == "1", (as.numeric(str_sub(NU_IDADE_N, start = 2)) / 8760),
                    ifelse(str_sub(NU_IDADE_N, end = 1) == "2", (as.numeric(str_sub(NU_IDADE_N, start = 2)) / 365.25),
                      ifelse(str_sub(NU_IDADE_N, end = 1) == "3", (as.numeric(str_sub(NU_IDADE_N, start = 2)) / 12), as.numeric(str_sub(NU_IDADE_N, start = 2))))),
-    #escolaridade
+    #education level
     CS_ESCOL_N = ifelse(CS_ESCOL_N == 0, 0,
                    ifelse(CS_ESCOL_N == 1, 1,
                      ifelse(CS_ESCOL_N == 2, 3,

@@ -163,7 +163,7 @@ xgb_final <- xgb_wf_final |> last_fit(d_sp)
 
 
 ## Performance metrics ####
-summary(conf_mat(xgb_final |> collect_predictions(), class_caso, .pred_class)) |> 
+tbl04 <- summary(conf_mat(xgb_final |> collect_predictions(), class_caso, .pred_class)) |> 
   dplyr::select(-.estimator) |> 
   rename(Metric = .metric, `Value` = .estimate) |> 
   gt() |> 
@@ -188,10 +188,11 @@ d_srag_com_pred <- d_srag_ind |>
   mutate(class_caso_pred = xgb_pd$.pred_class)
 
 
-# Table and data export ---------------------------------------------------
+# Tables and data export --------------------------------------------------
 
-# table
+# tables
 gt::gtsave(tbl01, filename = "03.results/supplementary/table01.png")
+gt::gtsave(tbl04, filename = "03.results/tabs/table04.png")
 
 # data
 saveRDS(d_srag_com_pred, "01.data/srag_16-21_[pred].rds")
