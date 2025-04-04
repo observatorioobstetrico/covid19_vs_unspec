@@ -22,7 +22,7 @@ Tables - `03.results/tabs/`
 
 Figures - `03.results/figs/`
 
-Supplementary material - `03.results/supplementary/`
+Supplementary material - `03.results/supp/`
 
 ### Software
 
